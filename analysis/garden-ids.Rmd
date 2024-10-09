@@ -22,14 +22,14 @@ Extract the relevant UUID and hashids from the finished Phase 1 garden studies, 
 
 
 ```{r read_data}
-data_M1_switchthingsup = read_csv(paste0(here::here(), '/data/M1_Let-s-switch-things-up-_all-responses-identifiable.csv'), show_col_types = FALSE)
-data_M2_shapedoesntbelong = read_csv(paste0(here::here(), '/data/M2_Which-Shape-Doesn-t-Belong-_all-responses-identifiable.csv'), show_col_types = FALSE)
-data_M3_thinkingaboutpeople = read_csv(paste0(here::here(), '/data/M3_Thinking-About-People_all-responses-identifiable.csv'), show_col_types = FALSE)
-data_M4_whathappenedif = read_csv(paste0(here::here(), '/data/M4_What-would-have-happened-if----_all-responses-identifiable.csv'), show_col_types = FALSE)
-data_M5_whataretheythinking = read_csv(paste0(here::here(), '/data/M5_What-are-they-thinking-_all-responses-identifiable.csv'), show_col_types = FALSE)
-data_M6_familyinfo = read_csv(paste0(here::here(), '/data/M6_GARDEN-Family-Information-Survey_all-responses-identifiable.csv'), show_col_types = FALSE)
-data_M7_visualvocab = read_csv(paste0(here::here(), '/data/M7_Visual-Vocabulary--A-picture-matching-game-_all-responses-identifiable.csv'), show_col_types = FALSE)
-data_M8_roadtrip = read_csv(paste0(here::here(), '/data/M8_Road-Trip-with-Friends-_all-responses-identifiable.csv'), show_col_types = FALSE)
+data_1switchthingsup = read_csv(paste0(here::here(), '/data/M1_Let-s-switch-things-up-_all-responses-identifiable.csv'), show_col_types = FALSE)
+data_2shapedoesntbelong = read_csv(paste0(here::here(), '/data/M2_Which-Shape-Doesn-t-Belong-_all-responses-identifiable.csv'), show_col_types = FALSE)
+data_3thinkingaboutpeople = read_csv(paste0(here::here(), '/data/M3_Thinking-About-People_all-responses-identifiable.csv'), show_col_types = FALSE)
+data_4whathappenedif = read_csv(paste0(here::here(), '/data/M4_What-would-have-happened-if----_all-responses-identifiable.csv'), show_col_types = FALSE)
+data_5whataretheythinking = read_csv(paste0(here::here(), '/data/M5_What-are-they-thinking-_all-responses-identifiable.csv'), show_col_types = FALSE)
+data_6familyinfo = read_csv(paste0(here::here(), '/data/M6_GARDEN-Family-Information-Survey_all-responses-identifiable.csv'), show_col_types = FALSE)
+data_7visualvocab = read_csv(paste0(here::here(), '/data/M7_Visual-Vocabulary--A-picture-matching-game-_all-responses-identifiable.csv'), show_col_types = FALSE)
+data_8roadtrip = read_csv(paste0(here::here(), '/data/M8_Road-Trip-with-Friends-_all-responses-identifiable.csv'), show_col_types = FALSE)
 ```
 
 **Select relevant columns**
@@ -37,50 +37,50 @@ data_M8_roadtrip = read_csv(paste0(here::here(), '/data/M8_Road-Trip-with-Friend
 ```{r select-cols}
 col_list = c('response__uuid', 'response__withdrawn', 'response__is_preview', 'consent__ruling', 'study__uuid', 'child__global_id', 'child__hashed_id')
 
-data_M1_switchthingsup <- data_M1_switchthingsup %>%
+data_1switchthingsup <- data_1switchthingsup %>%
   select(all_of(col_list)) %>%
-  mutate(study_name = 'M1_switchthingsup')
+  mutate(study_name = '1switchthingsup')
 
-data_M2_shapedoesntbelong <- data_M2_shapedoesntbelong %>%
+data_2shapedoesntbelong <- data_2shapedoesntbelong %>%
   select(all_of(col_list)) %>%
-  mutate(study_name = 'M2_shapedoesntbelong')
+  mutate(study_name = '2shapedoesntbelong')
 
-data_M3_thinkingaboutpeople <- data_M3_thinkingaboutpeople %>%
+data_3thinkingaboutpeople <- data_3thinkingaboutpeople %>%
   select(all_of(col_list)) %>%
-  mutate(study_name = 'M3_thinkingaboutpeople')
+  mutate(study_name = '3thinkingaboutpeople')
 
-data_M4_whathappenedif <- data_M4_whathappenedif %>%
+data_4whathappenedif <- data_4whathappenedif %>%
   select(all_of(col_list)) %>%
-  mutate(study_name = 'M4_whathappenedif')
+  mutate(study_name = '4whathappenedif')
 
-data_M5_whataretheythinking <- data_M5_whataretheythinking  %>%
+data_5whataretheythinking <- data_5whataretheythinking  %>%
   select(all_of(col_list)) %>%
-  mutate(study_name = 'M5_whataretheythinking')
+  mutate(study_name = '5whataretheythinking')
 
-data_M6_familyinfo <- data_M6_familyinfo %>%
+data_6familyinfo <- data_6familyinfo %>%
   select(all_of(col_list)) %>%
-  mutate(study_name = 'M6_familyinfo')
+  mutate(study_name = '6familyinfo')
 
-data_M7_visualvocab <- data_M7_visualvocab %>%
+data_7visualvocab <- data_7visualvocab %>%
   select(all_of(col_list)) %>%
-  mutate(study_name = 'M7_visualvocab')
+  mutate(study_name = '7visualvocab')
 
-data_M8_roadtrip <- data_M8_roadtrip %>%
+data_8roadtrip <- data_8roadtrip %>%
   select(all_of(col_list)) %>%
-  mutate(study_name = 'M8_roadtrip')
+  mutate(study_name = '8roadtrip')
 ```
 
 **Make big table**
 
 ```{r rbind}
-all_garden_p1 <- data_M1_switchthingsup %>%
-  rbind(data_M2_shapedoesntbelong) %>%
-  rbind(data_M3_thinkingaboutpeople) %>%
-  rbind(data_M4_whathappenedif) %>%
-  rbind(data_M5_whataretheythinking) %>%
-  rbind(data_M6_familyinfo) %>%
-  rbind(data_M7_visualvocab) %>%
-  rbind(data_M8_roadtrip)
+all_garden_p1 <- data_1switchthingsup %>%
+  rbind(data_2shapedoesntbelong) %>%
+  rbind(data_3thinkingaboutpeople) %>%
+  rbind(data_4whathappenedif) %>%
+  rbind(data_5whataretheythinking) %>%
+  rbind(data_6familyinfo) %>%
+  rbind(data_7visualvocab) %>%
+  rbind(data_8roadtrip)
 ```
 
 **Drop participants who shouldn't be included in raw tables**
@@ -96,7 +96,7 @@ all_garden_p1 <- all_garden_p1 %>%
 
 After: `r nrow(all_garden_p1)` rows in response table
 
-NOTE: This over-counts participants for external studies. We have no way of knowing from the CHS data what they do after leaving the site, so they may not actually schedule, actually show up, etc.)
+NOTE: This over-counts participants for external studies. We have no way of knowing from the CHS data what they do after leaving the site, so they may not actually schedule, actually show up, etc.
 
 **Select down to columns we need for ID munging!**
 
@@ -115,8 +115,10 @@ Data is long right now, so we'll be applying the hash every time a child's ID ap
 #  mutate(garden_child_id = hash(child__global_id))
 
 all_garden_p1 <- all_garden_p1 %>%
-  mutate(child__garden_id = modify(child__global_id, hash)) %>%
-  mutate(child__garden_id = paste0('g', substr(child__garden_id, 1,4), 'g'))
+  group_by(child__global_id) %>%
+  mutate(child__garden_id = hash(child__global_id)) %>%
+  ungroup() %>%
+  mutate(child__garden_id = paste0('g', substr(child__garden_id, 1,6), 'g'))
 ```
 
 NOTE: "The generated hash is guaranteed to be reproducible across platforms, but not across R versions."
@@ -129,21 +131,89 @@ Original/global: `r length(unique(all_garden_p1$child__global_id))`
 
 Garden: `r length(unique(all_garden_p1$child__garden_id))`
 
-**Start making Tables**
+**Save Big Tables**
 
-First of all, the table we have gives a complete list of the responses across all 8 studies of GardenP1, with the response UUID, study name, and all versions of the child ID.  We'll save that table in identifiable (with globalID) and non versions. 
+First of all, the table we have now gives a complete list of the responses across all 8 studies of GardenP1, with the response UUID, study name, and all versions of the child ID.  We'll save that table in identifiable (with globalID) and non versions. 
 
-```{r write-full-table}
-write_csv(all_garden_p1, paste0(here::here(), '/data/garden_p1_ids_long_identifiable.csv'))
+```{r write-long-table}
+write_csv(all_garden_p1, paste0(here::here(), '/data/gardenP1-ids_format-long_identifiable.csv'))
 
-write_csv(select(all_garden_p1, -child__global_id), paste0(here::here(), '/data/garden_p1_ids_long_noglobal.csv'))
+write_csv(select(all_garden_p1, -child__global_id), paste0(here::here(), '/data/gardenP1-ids_format-long.csv'))
 ```
 
 Note that this format is useful for keeping track of participants who have more than one response per study, of which there are plenty!
 
 ```{r print-multi-kids}
+session_table <- all_garden_p1 %>%
+  group_by(study_name, child__garden_id) %>%
+  summarize(n = n()) %>%
+  arrange(desc(n))
+
+kable(head(session_table))
 ```
+
+**Make Wide Tables**
 
 Next, reshape to get our 'primary' table with all participants, all studies, all possible id formats lined up across studies. 
 
 Do a magic pivot. 
+
+```{r pivot}
+pivot_garden <- all_garden_p1 %>%
+  group_by(study_name, child__garden_id) %>%
+  slice(1) %>%
+  ungroup() %>%
+  select(-response__uuid) %>%
+  pivot_wider(names_from = study_name, 
+              values_from = child__hashed_id,
+              names_prefix = "hashid_")
+
+```
+
+...and save identifiable and non versions.  This is the 'master list' table that the central team can use to check against all IDs aross all projects to make sure that things are lining up the way they should. 
+
+```{r write-wide-table}
+write_csv(pivot_garden, paste0(here::here(), '/data/gardenP1-ids_format-wide_identifiable.csv'))
+
+write_csv(select(pivot_garden, -child__global_id), paste0(here::here(), '/data/gardenP1-ids_format-wide.csv'))
+```
+
+This table is also convenient for doing some basic sanity checks.  For instance, there should be lots of children who have a hashid (and a session) for M1 but not M4, but relatively few who have a hashid for M4 but not M1. The latter should only happen when someone clicked into a study somehow by mistake/misunderstanding.
+
+```{r check-NAs}
+check_nas <- pivot_garden %>%
+  mutate(has_M1 = !is.na(hashid_1switchthingsup),
+         has_M4 = !is.na(hashid_4whathappenedif)) %>%
+  group_by(has_M1, has_M4) %>%
+  summarize(n = n())
+
+kable(check_nas)
+```
+
+**Make study tables**
+
+For each research group, make a version of this table that only has rows where they have data for that child. This is an extra-scrupulous step to make sure that global_ids aren't being exposed even to people on other teams.  
+
+It's possibly overkill, because the actual prohibition is on *publicizing* these UUIDs, but this way nobody holds anyone else's global_ids, so any screwups in this regard would be only their own. 
+
+```{r print-group-tables}
+
+write_csv(filter(pivot_garden, !is.na(hashid_1switchthingsup)), paste0(here::here(), '/data/gardenP1-ids_1switchthingsup_identifiable.csv'))
+
+write_csv(filter(pivot_garden, !is.na(hashid_2shapedoesntbelong)), paste0(here::here(), '/data/gardenP1-ids_2shapedoesntbelong_identifiable.csv'))
+
+write_csv(filter(pivot_garden, !is.na(hashid_3thinkingaboutpeople)), paste0(here::here(), '/data/gardenP1-ids_3thinkingaboutpeople_identifiable.csv'))
+
+write_csv(filter(pivot_garden, !is.na(hashid_4whathappenedif)), paste0(here::here(), '/data/gardenP1-ids_4whathappenedif_identifiable.csv'))
+
+write_csv(filter(pivot_garden, !is.na(hashid_5whataretheythinking)), paste0(here::here(), '/data/gardenP1-ids_5whataretheythinking_identifiable.csv'))
+
+write_csv(filter(pivot_garden, !is.na(hashid_6familyinfo)), paste0(here::here(), 
+                                                                  '/data/gardenP1-ids_6familyinfo_identifiable.csv'))
+
+write_csv(filter(pivot_garden, !is.na(hashid_7visualvocab)), paste0(here::here(), '/data/gardenP1-ids_7visualvocab_identifiable.csv'))
+
+write_csv(filter(pivot_garden, !is.na(hashid_8roadtrip)), paste0(here::here(), '/data/gardenP1-ids_8roadtrip_identifiable.csv'))
+
+```
+
