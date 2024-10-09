@@ -1,0 +1,149 @@
+---
+title: "Garden IDs"
+output: html_document
+params:
+  show_details: FALSE
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+library(tidyverse)
+library(here)
+library(tidyjson)
+library(kableExtra)
+library(lubridate)
+library(rlang)
+```
+
+
+Extract the relevant UUID and hashids from the finished Phase 1 garden studies, and make some tables. 
+
+**Load data files**
+
+
+```{r read_data}
+data_M1_switchthingsup = read_csv(paste0(here::here(), '/data/M1_Let-s-switch-things-up-_all-responses-identifiable.csv'), show_col_types = FALSE)
+data_M2_shapedoesntbelong = read_csv(paste0(here::here(), '/data/M2_Which-Shape-Doesn-t-Belong-_all-responses-identifiable.csv'), show_col_types = FALSE)
+data_M3_thinkingaboutpeople = read_csv(paste0(here::here(), '/data/M3_Thinking-About-People_all-responses-identifiable.csv'), show_col_types = FALSE)
+data_M4_whathappenedif = read_csv(paste0(here::here(), '/data/M4_What-would-have-happened-if----_all-responses-identifiable.csv'), show_col_types = FALSE)
+data_M5_whataretheythinking = read_csv(paste0(here::here(), '/data/M5_What-are-they-thinking-_all-responses-identifiable.csv'), show_col_types = FALSE)
+data_M6_familyinfo = read_csv(paste0(here::here(), '/data/M6_GARDEN-Family-Information-Survey_all-responses-identifiable.csv'), show_col_types = FALSE)
+data_M7_visualvocab = read_csv(paste0(here::here(), '/data/M7_Visual-Vocabulary--A-picture-matching-game-_all-responses-identifiable.csv'), show_col_types = FALSE)
+data_M8_roadtrip = read_csv(paste0(here::here(), '/data/M8_Road-Trip-with-Friends-_all-responses-identifiable.csv'), show_col_types = FALSE)
+```
+
+**Select relevant columns**
+
+```{r select-cols}
+col_list = c('response__uuid', 'response__withdrawn', 'response__is_preview', 'consent__ruling', 'study__uuid', 'child__global_id', 'child__hashed_id')
+
+data_M1_switchthingsup <- data_M1_switchthingsup %>%
+  select(all_of(col_list)) %>%
+  mutate(study_name = 'M1_switchthingsup')
+
+data_M2_shapedoesntbelong <- data_M2_shapedoesntbelong %>%
+  select(all_of(col_list)) %>%
+  mutate(study_name = 'M2_shapedoesntbelong')
+
+data_M3_thinkingaboutpeople <- data_M3_thinkingaboutpeople %>%
+  select(all_of(col_list)) %>%
+  mutate(study_name = 'M3_thinkingaboutpeople')
+
+data_M4_whathappenedif <- data_M4_whathappenedif %>%
+  select(all_of(col_list)) %>%
+  mutate(study_name = 'M4_whathappenedif')
+
+data_M5_whataretheythinking <- data_M5_whataretheythinking  %>%
+  select(all_of(col_list)) %>%
+  mutate(study_name = 'M5_whataretheythinking')
+
+data_M6_familyinfo <- data_M6_familyinfo %>%
+  select(all_of(col_list)) %>%
+  mutate(study_name = 'M6_familyinfo')
+
+data_M7_visualvocab <- data_M7_visualvocab %>%
+  select(all_of(col_list)) %>%
+  mutate(study_name = 'M7_visualvocab')
+
+data_M8_roadtrip <- data_M8_roadtrip %>%
+  select(all_of(col_list)) %>%
+  mutate(study_name = 'M8_roadtrip')
+```
+
+**Make big table**
+
+```{r rbind}
+all_garden_p1 <- data_M1_switchthingsup %>%
+  rbind(data_M2_shapedoesntbelong) %>%
+  rbind(data_M3_thinkingaboutpeople) %>%
+  rbind(data_M4_whathappenedif) %>%
+  rbind(data_M5_whataretheythinking) %>%
+  rbind(data_M6_familyinfo) %>%
+  rbind(data_M7_visualvocab) %>%
+  rbind(data_M8_roadtrip)
+```
+
+**Drop participants who shouldn't be included in raw tables**
+
+This is ONLY cases from the directly-downloaded CHS files where data is withdrawn by parent at the end of the study, or session was a preview session.  Other than that, we will expect to see all these participants in the resulting concordance table, and also in research-submitted datasets.
+
+Before filter: `r nrow(all_garden_p1)` rows in response table
+
+```{r drop-ineligible}
+all_garden_p1 <- all_garden_p1 %>%
+  filter(!response__is_preview & !response__withdrawn)
+```
+
+After: `r nrow(all_garden_p1)` rows in response table
+
+NOTE: This over-counts participants for external studies. We have no way of knowing from the CHS data what they do after leaving the site, so they may not actually schedule, actually show up, etc.)
+
+**Select down to columns we need for ID munging!**
+
+```{r idcols}
+all_garden_p1 <- all_garden_p1 %>%
+  select(response__uuid, child__global_id, child__hashed_id, study_name)
+```
+
+**Make Garden HashIDs!**
+
+Data is long right now, so we'll be applying the hash every time a child's ID appears in the dataset. This is good in that the hash should always produce the same value, as a sanity check. 
+
+```{r make-hash}
+#Doesn't work, assigns single hash
+#all_garden_p1 <- all_garden_p1 %>%
+#  mutate(garden_child_id = hash(child__global_id))
+
+all_garden_p1 <- all_garden_p1 %>%
+  mutate(child__garden_id = modify(child__global_id, hash)) %>%
+  mutate(child__garden_id = paste0('g', substr(child__garden_id, 1,4), 'g'))
+```
+
+NOTE: "The generated hash is guaranteed to be reproducible across platforms, but not across R versions."
+
+**Check for hash collisions**
+
+The number of unique original child IDs and garden child IDs should match:
+
+Original/global: `r length(unique(all_garden_p1$child__global_id))`
+
+Garden: `r length(unique(all_garden_p1$child__garden_id))`
+
+**Start making Tables**
+
+First of all, the table we have gives a complete list of the responses across all 8 studies of GardenP1, with the response UUID, study name, and all versions of the child ID.  We'll save that table in identifiable (with globalID) and non versions. 
+
+```{r write-full-table}
+write_csv(all_garden_p1, paste0(here::here(), '/data/garden_p1_ids_long_identifiable.csv'))
+
+write_csv(select(all_garden_p1, -child__global_id), paste0(here::here(), '/data/garden_p1_ids_long_noglobal.csv'))
+```
+
+Note that this format is useful for keeping track of participants who have more than one response per study, of which there are plenty!
+
+```{r print-multi-kids}
+```
+
+Next, reshape to get our 'primary' table with all participants, all studies, all possible id formats lined up across studies. 
+
+Do a magic pivot. 
